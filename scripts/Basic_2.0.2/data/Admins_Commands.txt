@@ -1,0 +1,10 @@
+__________Admin_Commands:___________________________
+/kickall /killall  - Kick, kill all                |
+/explodeall        - Efficiently kill all.         |
+/banr <ID> <Time(m|h|d|mon|y)> <Reason>            |
+                   - Ban player of id on specified |
+                     time (hour, day, months)      |
+                     with the stated reason        |
+/randomize         - Randomize Maplist             |
+/reloadsettings    - Reloading script settings     |
+___________________________________________________|

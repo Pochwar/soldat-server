@@ -1,0 +1,14 @@
+__________Commands_List:___________________________________________________
+!a          !b        !s     !j         - Change team, Join team          |
+!ping       !ping <*> !track !track <*> - Shows: Ping, Max & Average      |
+!map        !maps                       - Current map name, Map list      |
+!rate       !rate <*>                   - Shows: Your or player ratio     |
+!vote       !nextmap  !lastmap          - Vote for nextmap or lastmap     |
+!whois      !admin                      - Admins online, Calling admin    |
+!time       !rules                      - Current date & time, Rules list |
+!stats <*>                              - Shows: Your or player stats     |
+!medic                                  - Become team's medic             |
+!kit        !money                      - Shows: shop, money amount       |
+!account                                - Shows: account information      |
+What is <*>                             - Can be ID, part name, full name |
+__________________________________________________________________________|
