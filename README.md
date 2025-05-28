@@ -2,6 +2,15 @@
 
 Here are different Soldat scripts that I use on my CTF server. They are designed to enhance the gameplay experience by adding various features and functionalities.
 
+## TODO
+### Bugfixs
+- [Medic] Prevent medic to restore Vest when healing
+- [Shop] Prevent health bonus to restore Vest
+
+### Features
+- [Shop] Give money when capturing Flag
+- [Shop] Give more money when killing with headshot
+
 ## List
 ### Basic
 Basic functionalities
