@@ -1,3 +1,9 @@
+unit Medic;
+
+interface
+
+implementation
+
 const
   HpHealed= 10;       //hp regenerated per heal
   HealForPoint= 65; //how much hp medic must heal to get 1 point (hp in realistic is 65)
@@ -8,11 +14,10 @@ var
   Medic: array[1..2] of byte;
   Healed: array[1..2] of integer;
   MaxHP: byte;
-  Vest: integer;
 
 procedure Reset;
 begin
-  if Command('/realistic') = 1 then MaxHP:= 65 else MaxHP:= 150;
+  if Game.Realistic then MaxHP:= 65 else MaxHP:= 150;
   Medic[1]:= 0;
   Medic[2]:= 0;
   Healed[1]:= 0;
@@ -27,12 +32,12 @@ end;
 procedure OnMapChange(NewMap: string);
 begin
   Reset;
-  WriteConsole(0,'Medic position is now free. Write !medic to apply.',Color);
+  Players.WriteConsole('Medic position is now free. Write !medic to apply.',Color);
 end;
 
 procedure MedicQuit(Team: byte);
 begin
-  WriteConsole(0,IDToName(Medic[Team])+' is no longer the '+iif(Team=1,'alpha','bravo')+' team''s medic!',iif(Team=1,$AAAA00,$00AAAA));
+  Players.WriteConsole(Players[Medic[Team]].Name +' is no longer the '+iif(Team=1,'alpha','bravo')+' team''s medic!',iif(Team=1,$AAAA00,$00AAAA));
   Medic[Team]:= 0;
   Healed[Team]:= 0;
 end;
@@ -42,63 +47,80 @@ var
   HP, FinalHeal: integer;
   i: byte;
 begin
-  for i:= 1 to 32 do if GetPlayerStat(i,'Active') = true then if GetPlayerStat(i,'Alive') = true then if GetPlayerStat(i,'Health') < MaxHP then
-   if Team = GetPlayerStat(i,'Team') then if
-    Distance(GetPlayerStat(Medic[Team],'X'),GetPlayerStat(Medic[Team],'Y'),GetPlayerStat(i,'X'),GetPlayerStat(i,'Y')) <= HealDistance then begin
+  for i:= 1 to 32 do
 
-    // Test pour fi x le heal de la veste
-    //Vest := GetPlayerStat(i,'Vest');
-    //WriteConsole(Medic[Team],IntToStr(Vest),Color);
-	
-    DrawText(Medic[Team],'Healing',60,Color,0.1,160,350);
-    if GetPlayerStat(i,'Health') <= (MaxHP-HpHealed) then HP:= HpHealed else HP:= MaxHP-GetPlayerStat(i,'Health');
+  if Players[i].Active = true then if Players[i].Alive = true then if round(Players[i].Health) < MaxHP then if Team = Players[i].Team then
+    if Distance(Players[Medic[Team]].X,Players[Medic[Team]].Y,Players[i].X,Players[i].Y) <= HealDistance then begin
+
+    Players[Medic[Team]].BigText(77,'Healing',60,Color,0.1,160,350);
+	if round(Players[i].Health) <= (MaxHP-HpHealed) then HP:= HpHealed else HP:= round(MaxHP-Players[i].Health);
     
-	// if medic heal less
+	// if medic, heal less
     if i = Medic[Team] then
       FinalHeal := HP div 2
     else
       FinalHeal := HP;
 	
-	DoDamage(i,-FinalHeal);
+	Players[i].Health := Players[i].Health + Single(FinalHeal);
+
     if Medic[Team] <> i then begin
       inc(Healed[Team],HP);
       if Healed[Team] > HealForPoint then begin
-        WriteConsole(Medic[Team],'You got 1 point for healing.',Color);
-        SetScore(Medic[Team],GetPlayerStat(Medic[Team],'Kills')+1);
+        Players[Medic[Team]].WriteConsole('You got 1 point for healing.',Color);
+		Players[Medic[Team]].Kills := Players[Medic[Team]].Kills+1;
         Healed[Team]:= 0;
       end;
     end;
-  end;
+  end; 
 end;
 
-procedure OnPlayerSpeak(ID: byte; Text: string);
+procedure OnPlayerSpeak(Player: TActivePlayer; Text: string);
 var T: byte;
 begin
-  if RegExpMatch('^!(medic|med|medi)$',LowerCase(Text)) then if (GetPlayerStat(ID,'Team')=1) or (GetPlayerStat(ID,'Team')=2) then begin
-    T:= GetPlayerStat(ID,'Team');
+  Text := LowerCase(Text);
+  if (Text = '!medic') or (Text = '!med') or (Text = '!medi') then if (Player.Team=1) or (Player.Team=2) then begin
+    T:= Player.Team;
     if Medic[T]=0 then begin
-      WriteConsole(0,IDToName(ID)+' is now the '+iif(T=1,'alpha','bravo')+' team''s medic!',iif(T=1,$AAAA00,$00AAAA));
-      Medic[T]:= ID;
-    end else if Medic[T] = ID then begin
+      Players.WriteConsole(Player.Name+' is now the '+iif(T=1,'alpha','bravo')+' team''s medic!',iif(T=1,$AAAA00,$00AAAA));
+      Medic[T]:= Player.ID;
+    end else if Medic[T] = Player.ID then begin
       MedicQuit(T);
-    end else WriteConsole(ID,IDToName(Medic[T])+' is already your team''s medic!',Color);
+    end else Player.WriteConsole(Players[Medic[T]].Name+' is already your team''s medic!',Color);
   end;
 end;
 
-procedure OnLeaveGame(ID, Team: byte; Kicked: boolean);
+procedure OnLeaveGame(Player: TActivePlayer; Kicked: Boolean);
 begin
-  if (Team = 1) or (Team = 2) then if ID = Medic[Team] then MedicQuit(Team);
+  if (Player.Team = 1) or (Player.Team = 2) then if Player.ID = Medic[Player.Team] then MedicQuit(Player.Team);
 end;
 
-procedure OnJoinTeam(ID, Team: byte);
+procedure OnJoinTeam(Player: TActivePlayer; Team: TTeam);
 begin
-  if (Medic[1]=ID) or (Medic[2]=ID) then MedicQuit(iif(Medic[1]=ID,1,2));
-  if (Team = 1) or (Team = 2) then if Medic[Team]=0 then WriteConsole(ID,'Medic position is free. Write !medic to apply.',Color) else
-   WriteConsole(ID,IDToName(Medic[Team]) + ' is your team''s medic.',Color);
+  if (Medic[1]=Player.ID) or (Medic[2]=Player.ID) then MedicQuit(iif(Medic[1]=Player.ID,1,2));
+  if (Team.ID = 1) or (Team.ID = 2) then if Medic[Team.ID]=0 then Players[Player.ID].WriteConsole('Medic position is free. Write !medic to apply.',Color) else
+   Players[Player.ID].WriteConsole(Players[Medic[Team.ID]].Name + ' is your team''s medic.',Color);
 end;
 
-procedure OnWeaponChange(ID, PrimaryNum, SecondaryNum: byte);
+procedure OnWeaponChange(Player: TActivePlayer; Primary, Secondary: TPlayerWeapon);
 begin
-  if (Medic[1]=ID) or (Medic[2]=ID) then if GetPlayerStat(ID,'Health') > 0 then Heal(iif(Medic[1]=ID,1,2));
+  if (Medic[1]=Player.ID) or (Medic[2]=Player.ID) then if Players[Player.ID].Health > 0 then Heal(iif(Medic[1]=Player.ID,1,2));
 end;
 
+procedure ScriptDecl();
+var i:byte;
+begin
+	for i := 1 to 32 do Players[i].onSpeak := @OnPlayerSpeak;
+	for i := 1 to 32 do Players[i].OnWeaponChange := @OnWeaponChange;
+	for i := 1 to 2 do Game.Teams[i].onJoin := @OnJoinTeam;
+	Map.OnAfterMapChange := @OnMapChange;
+	Game.OnLeave := @OnLeaveGame;
+end;
+
+initialization
+begin
+	ScriptDecl();
+	ActivateServer();
+end;
+
+finalization;
+end.

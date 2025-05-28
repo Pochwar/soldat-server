@@ -4,7 +4,6 @@ Here are different Soldat scripts that I use on my CTF server. They are designed
 
 ## TODO
 ### Bugfixs
-- [Medic] Prevent medic to restore Vest when healing
 - [Shop] Prevent health bonus to restore Vest
 
 ### Features
