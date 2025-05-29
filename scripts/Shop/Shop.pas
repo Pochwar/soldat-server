@@ -25,6 +25,7 @@ Player: array[0..32] of Gracz;
 kasazazabicie:integer; // ile czegoś za coś
 killTheFlagger:integer;
 killAsFlagger:integer;
+captureTheFlag:integer;
 totalReward:integer;
 resume:string;
 med,nady,vest,clust,berserk,predator,flamegod,Desert,HK,AK,Steyr,Spas,Ruger,M79,Barrett,Minimi,Minigun,USSO,Knife,SAW,LAW,xp:integer; // cena przedmiotów
@@ -393,6 +394,7 @@ begin
 kasazazabicie:=45;
 killAsFlagger:=20;
 killTheFlagger:=10;
+captureTheFlag:=100;
 ////////// Sklep i Skille ///////////////
 med		 :=235;
 nady	 :=250;
@@ -459,11 +461,11 @@ begin
   end;
 end;
 
-//procedure AppOnIdle(Ticks: integer);
-//var i: byte;
-//begin
-//if Ticks mod(3600*2) = 0 then WriteConsole(0,'Type !cmds for more info',green);
-//end;
+procedure OnFlagScore(ID, TeamFlag: byte);
+begin
+  Player[ID].Pkasa	:=Player[ID].Pkasa	+ captureTheFlag;
+  WriteConsole(ID, '+'+IntToStr(captureTheFlag)+'$ for capturing flag (total: '+IntToStr(Player[ID].Pkasa)+'$)',green);
+end;
 
 //========================================================================================================================================================================
 function OnPlayerCommand(ID: Byte; Text: string): boolean;
