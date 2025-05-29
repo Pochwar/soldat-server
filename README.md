@@ -9,7 +9,6 @@ Here are different Soldat scripts that I use on my CTF server. They are designed
 ### Features
 - [Shop] Give money when capturing Flag
 - [Shop] Give more money when killing with headshot
-- [Medic] Heal teammate only by being close instead of switching weapon (keep switching weapon for auto-heal)
 
 ## List
 ### Basic
