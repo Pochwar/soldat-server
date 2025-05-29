@@ -42,36 +42,44 @@ begin
   Healed[Team]:= 0;
 end;
 
-procedure Heal(Team: byte);
+procedure HealPlayer(MedicID, TargetID: byte);
 var
   HP, FinalHeal: integer;
-  i: byte;
 begin
-  for i:= 1 to 32 do
+  if not Players[TargetID].Active or not Players[TargetID].Alive then exit;
+  if round(Players[TargetID].Health) >= MaxHP then exit;
 
-  if Players[i].Active = true then if Players[i].Alive = true then if round(Players[i].Health) < MaxHP then if Team = Players[i].Team then
-    if Distance(Players[Medic[Team]].X,Players[Medic[Team]].Y,Players[i].X,Players[i].Y) <= HealDistance then begin
+  if Distance(Players[MedicID].X, Players[MedicID].Y, Players[TargetID].X, Players[TargetID].Y) > HealDistance then exit;
+  Players[MedicID].BigText(77,'Healing',60,Color,0.1,160,350);
+  if round(Players[TargetID].Health) <= (MaxHP - HpHealed) then
+    HP := HpHealed
+  else
+    HP := round(MaxHP - Players[TargetID].Health);
 
-    Players[Medic[Team]].BigText(77,'Healing',60,Color,0.1,160,350);
-	if round(Players[i].Health) <= (MaxHP-HpHealed) then HP:= HpHealed else HP:= round(MaxHP-Players[i].Health);
-    
-	// if medic, heal less
-    if i = Medic[Team] then
-      FinalHeal := HP div 2
-    else
-      FinalHeal := HP;
-	
-	Players[i].Health := Players[i].Health + Single(FinalHeal);
+  if MedicID = TargetID then
+    FinalHeal := HP div 2
+  else
+    FinalHeal := HP;
 
-    if Medic[Team] <> i then begin
-      inc(Healed[Team],HP);
-      if Healed[Team] > HealForPoint then begin
-        Players[Medic[Team]].WriteConsole('You got 1 point for healing.',Color);
-		Players[Medic[Team]].Kills := Players[Medic[Team]].Kills+1;
-        Healed[Team]:= 0;
-      end;
+  Players[TargetID].Health := Players[TargetID].Health + Single(FinalHeal);
+
+  if MedicID <> TargetID then begin
+    Inc(Healed[Players[MedicID].Team], HP);
+    if Healed[Players[MedicID].Team] > HealForPoint then begin
+      Players[MedicID].WriteConsole('You got 1 point for healing.', Color);
+      Players[MedicID].Kills := Players[MedicID].Kills + 1;
+      Healed[Players[MedicID].Team] := 0;
     end;
-  end; 
+  end;
+end;
+
+procedure HealNearby;
+var
+  t, i: byte;
+begin
+  for t := 1 to 2 do if Medic[t] > 0 then
+    for i := 1 to 32 do if Players[i].Active and Players[i].Alive and (Players[i].Team = t) then
+      if i <> Medic[t] then HealPlayer(Medic[t], i);
 end;
 
 procedure OnPlayerSpeak(Player: TActivePlayer; Text: string);
@@ -103,7 +111,14 @@ end;
 
 procedure OnWeaponChange(Player: TActivePlayer; Primary, Secondary: TPlayerWeapon);
 begin
-  if (Medic[1]=Player.ID) or (Medic[2]=Player.ID) then if Players[Player.ID].Health > 0 then Heal(iif(Medic[1]=Player.ID,1,2));
+  if (Medic[1] = Player.ID) or (Medic[2] = Player.ID) then
+    HealPlayer(Player.ID, Player.ID); // Medic heals himself only
+end;
+
+procedure OnClock(Ticks: integer);
+begin
+  if Ticks mod 30 = 0 then // every ~0.5 seconds
+    HealNearby;
 end;
 
 procedure ScriptDecl();
@@ -114,6 +129,7 @@ begin
 	for i := 1 to 2 do Game.Teams[i].onJoin := @OnJoinTeam;
 	Map.OnAfterMapChange := @OnMapChange;
 	Game.OnLeave := @OnLeaveGame;
+	Game.OnClockTick := @OnClock;
 end;
 
 initialization
