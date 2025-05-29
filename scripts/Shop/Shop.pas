@@ -462,9 +462,20 @@ begin
 end;
 
 procedure OnFlagScore(ID, TeamFlag: byte);
+var t: byte;
+var count: integer;
 begin
-  Player[ID].Pkasa	:=Player[ID].Pkasa	+ captureTheFlag;
-  WriteConsole(ID, '+'+IntToStr(captureTheFlag)+'$ for capturing flag (total: '+IntToStr(Player[ID].Pkasa)+'$)',green);
+  count := 0;
+  for t:= 1 to 32 do begin
+    if getplayerstat(t,'active') then begin
+      count := count + 1;
+    end;
+  end;
+  // Prevent farming being alone in server
+  if (count > 1) then begin
+    Player[ID].Pkasa	:=Player[ID].Pkasa	+ captureTheFlag;
+    WriteConsole(ID, '+'+IntToStr(captureTheFlag)+'$ for capturing flag (total: '+IntToStr(Player[ID].Pkasa)+'$)',green);
+  end;
 end;
 
 //========================================================================================================================================================================
