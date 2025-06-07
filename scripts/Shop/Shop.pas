@@ -28,6 +28,7 @@ killAsFlagger:integer;
 captureTheFlag:integer;
 totalReward:integer;
 resume:string;
+infoMsgDisplayed:boolean;
 med,nady,vest,clust,berserk,predator,flamegod,Desert,HK,AK,Steyr,Spas,Ruger,M79,Barrett,Minimi,Minigun,USSO,Knife,SAW,LAW,xp:integer; // cena przedmiotów
 
 //========================================================================================================================================================================
@@ -391,6 +392,7 @@ end;
 //========================================================================================================================================================================
 procedure ActivateServer();
 begin
+infoMsgDisplayed:=false;
 kasazazabicie:=45;
 killAsFlagger:=20;
 killTheFlagger:=10;
@@ -745,14 +747,33 @@ end;
 procedure OnMapChange(NewMap: String);
 var t: byte;
 begin
+infoMsgDisplayed:=false;
 for t:= 1 to 32 do begin
 	if getplayerstat(t,'human') then begin
-	if Player[t].Plogged then begin
+	  if Player[t].Plogged then begin
 		Save(t,Player[t].Pname,Player[t].Ppass);
 		writeconsole(t,'All Accounts saved',red)
-		end;
+      end;
 	end;
 end;
+end;
+
+
+procedure AppOnIdle(Ticks: integer);
+var t: byte;
+begin
+  if (not infoMsgDisplayed) then begin
+    if ((Ticks mod 300) = 0) then begin
+      infoMsgDisplayed:=true;
+      for t:= 1 to 32 do begin
+        if getplayerstat(t,'human') then begin
+          if not Player[t].Plogged then begin
+            writeconsole(t,'You are not logged. Type !accounts for more infos',red)
+          end;
+	    end;
+      end;
+	end;
+  end;
 end;
 
 procedure OnPlayerSpeak(ID: Byte; Text: string);
