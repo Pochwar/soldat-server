@@ -515,7 +515,7 @@ if Text='/reset' then ResetStats(ID);
 if Text = '/save' then if Player[ID].Plogged then Save(ID,Player[ID].Pname,Player[ID].Ppass);
 ////////////////////////////////////////////////////////////////// Sklep i SkilleSkille ////////////////////////////////////////////////
 if regExpMatch('^/(buy1|buy-1|buy 1|buy nade|buy nades|buy granades|buy nadepack)$',lowercase(Text)) then begin
-  if activeEquip then begin
+  if (GetPlayerStat(ID,'Alive') = true) and activeEquip then begin
       if Player[ID].Pkasa >= nady then begin
           Player[ID].Pkasa := Player[ID].Pkasa - nady;
           GiveBonus(ID,4);
@@ -526,7 +526,7 @@ end;
 
 if regExpMatch('^/(buy-2|buy2|buy 2|buy med|buy medkit|buy apteczka)$', lowercase(Text)) then
 begin
-  if activeEquip then
+  if (GetPlayerStat(ID,'Alive') = true) and activeEquip then
   begin
     if Player[ID].Pkasa >= med then
     begin
@@ -550,7 +550,7 @@ begin
 end;
 
 if regExpMatch('^/(buy-3|buy3|buy 3|buy clust|buy cluster|buy cluster granades)$',lowercase(Text)) then begin
-  if activeEquip then begin
+  if (GetPlayerStat(ID,'Alive') = true) and activeEquip then begin
       if Player[ID].Pkasa >= clust then begin
           Player[ID].Pkasa := Player[ID].Pkasa - clust;
           GiveBonus(ID,5);
@@ -560,7 +560,7 @@ if regExpMatch('^/(buy-3|buy3|buy 3|buy clust|buy cluster|buy cluster granades)$
 end;
 
 if regExpMatch('^/(buy vest|buy4|buy-4|buy 4|buy kamizelka)$',lowercase(Text)) then begin
-  if activeEquip then begin
+  if (GetPlayerStat(ID,'Alive') = true) and activeEquip then begin
       if Player[ID].Pkasa >= vest then begin
           Player[ID].Pkasa := Player[ID].Pkasa - vest;
           GiveBonus(ID,3);
@@ -570,7 +570,7 @@ if regExpMatch('^/(buy vest|buy4|buy-4|buy 4|buy kamizelka)$',lowercase(Text)) t
 end;
 
 if regExpMatch('^/(buy berserk|buy5|buy-5|buy 5)$',lowercase(Text)) then begin
-  if activeEquip then begin
+  if (GetPlayerStat(ID,'Alive') = true) and activeEquip then begin
       if Player[ID].Pkasa >= berserk then begin
           Player[ID].Pkasa := Player[ID].Pkasa - berserk;
           GiveBonus(ID,2);
@@ -580,7 +580,7 @@ if regExpMatch('^/(buy berserk|buy5|buy-5|buy 5)$',lowercase(Text)) then begin
 end;
 
 if regExpMatch('^/(buy predator|buy6|buy-6|buy 6)$',lowercase(Text)) then begin
-  if activeEquip then begin
+  if (GetPlayerStat(ID,'Alive') = true) and activeEquip then begin
       if Player[ID].Pkasa >= predator then begin
           Player[ID].Pkasa := Player[ID].Pkasa - predator;
           GiveBonus(ID,1);
@@ -590,7 +590,7 @@ if regExpMatch('^/(buy predator|buy6|buy-6|buy 6)$',lowercase(Text)) then begin
 end;
 
 if regExpMatch('^/(buy flame|buy flamegod|buy 7|buy7)$',lowercase(Text)) then begin
-  if activeEquip then begin
+  if (GetPlayerStat(ID,'Alive') = true) and activeEquip then begin
       if Player[ID].Pkasa >= flamegod then begin
           Player[ID].Pkasa := Player[ID].Pkasa - flamegod;
           GiveBonus(ID,6);
@@ -600,7 +600,7 @@ if regExpMatch('^/(buy flame|buy flamegod|buy 7|buy7)$',lowercase(Text)) then be
 end;
 
 if regExpMatch('^/(buy desert eagles|buy eagle|buy deagles|buy deserteagles|buy eagles|buy eagle)$',lowercase(Text)) then begin
-  if activeWeapon then begin
+  if (GetPlayerStat(ID,'Alive') = true) and activeWeapon then begin
 	if Player[ID].Pkasa >= Desert then begin
 		Player[ID].Pkasa := Player[ID].Pkasa - Desert;
 		forceWeapon(ID,1,GetPlayerStat(ID,'Primary'),0);
@@ -610,7 +610,7 @@ if regExpMatch('^/(buy desert eagles|buy eagle|buy deagles|buy deserteagles|buy 
 end;
 
 if regExpMatch('^/(buy hkmp5|buy mp5|buy hk|buy hk mp5)$',lowercase(Text)) then begin
-  if activeWeapon then begin
+  if (GetPlayerStat(ID,'Alive') = true) and activeWeapon then begin
 	if Player[ID].Pkasa >= HK then begin
 		Player[ID].Pkasa := Player[ID].Pkasa - HK;
 		forceWeapon(ID,2,GetPlayerStat(ID,'Primary'),0);
@@ -620,7 +620,7 @@ if regExpMatch('^/(buy hkmp5|buy mp5|buy hk|buy hk mp5)$',lowercase(Text)) then 
 end;
 
 if regExpMatch('^/(buy ak74|buy ak|buy ak-74|buy ak 74|buy ak - 74|buy ak -74|buy ak- 74)$',lowercase(Text)) then begin
-  if activeWeapon then begin
+  if (GetPlayerStat(ID,'Alive') = true) and activeWeapon then begin
 	if Player[ID].Pkasa >= AK then begin
 		Player[ID].Pkasa := Player[ID].Pkasa - AK;
 		forceWeapon(ID,3,GetPlayerStat(ID,'Primary'),0);
@@ -630,7 +630,7 @@ if regExpMatch('^/(buy ak74|buy ak|buy ak-74|buy ak 74|buy ak - 74|buy ak -74|bu
 end;
 
 if regExpMatch('^/(buy steyr|buy aug|buy Steyr AUG)$',lowercase(Text)) then begin
-  if activeWeapon then begin
+  if (GetPlayerStat(ID,'Alive') = true) and activeWeapon then begin
 	if Player[ID].Pkasa >= Steyr then begin
 		Player[ID].Pkasa := Player[ID].Pkasa - Steyr;
 		forceWeapon(ID,4,GetPlayerStat(ID,'Primary'),0);
@@ -640,7 +640,7 @@ if regExpMatch('^/(buy steyr|buy aug|buy Steyr AUG)$',lowercase(Text)) then begi
 end;
 
 if regExpMatch('^/(buy spas 12|buy spas-12|buy Spas|buy Spas 12|buy spas12|buy spas)$',lowercase(Text)) then begin
-  if activeWeapon then begin
+  if (GetPlayerStat(ID,'Alive') = true) and activeWeapon then begin
 	if Player[ID].Pkasa >= Spas then begin
 		Player[ID].Pkasa := Player[ID].Pkasa - Spas;
 		forceWeapon(ID,5,GetPlayerStat(ID,'Primary'),0);
@@ -650,7 +650,7 @@ if regExpMatch('^/(buy spas 12|buy spas-12|buy Spas|buy Spas 12|buy spas12|buy s
 end;
 
 if regExpMatch('^/(buy ruger|buy ruger77|buy Ruger|buy Ruger77|buy ruger 77|buy Ruger 77)$',lowercase(Text)) then begin
-  if activeWeapon then begin
+  if (GetPlayerStat(ID,'Alive') = true) and activeWeapon then begin
 	if Player[ID].Pkasa >= Ruger then begin
 		Player[ID].Pkasa := Player[ID].Pkasa - Ruger;
 		forceWeapon(ID,6,GetPlayerStat(ID,'Primary'),0);
@@ -660,7 +660,7 @@ if regExpMatch('^/(buy ruger|buy ruger77|buy Ruger|buy Ruger77|buy ruger 77|buy 
 end;
 
 if regExpMatch('^/(buy m79|buy M79|buy m-79|buy m 79| buy m- 79|buy m -79)$',lowercase(Text)) then begin
-  if activeWeapon then begin
+  if (GetPlayerStat(ID,'Alive') = true) and activeWeapon then begin
 	if Player[ID].Pkasa >= M79 then begin
 		Player[ID].Pkasa := Player[ID].Pkasa - M79;
 		forceWeapon(ID,7,GetPlayerStat(ID,'Primary'),0);
@@ -670,7 +670,7 @@ if regExpMatch('^/(buy m79|buy M79|buy m-79|buy m 79| buy m- 79|buy m -79)$',low
 end;
 
 if regExpMatch('^/(buy barreta|buy Barreta|buy barr|buy Barr|buy BARR|buy barrett m82a1|buy Barrett M82A1|buy barret|buy Barret|buy baret|buy Baret|buy beret|buy Beret)$',lowercase(Text)) then begin
-  if activeWeapon then begin
+  if (GetPlayerStat(ID,'Alive') = true) and activeWeapon then begin
 	if Player[ID].Pkasa >= Barrett then begin
 		Player[ID].Pkasa := Player[ID].Pkasa - Barrett;
 		forceWeapon(ID,8,GetPlayerStat(ID,'Primary'),0);
@@ -680,7 +680,7 @@ if regExpMatch('^/(buy barreta|buy Barreta|buy barr|buy Barr|buy BARR|buy barret
 end;
 
 if regExpMatch('^/(buy fn minimi|buy FN|buy FN Minimi|buy minimi|buy Minimi|buy fn|buy M249 SAW|buy M249)$',lowercase(Text)) then begin
-  if activeWeapon then begin
+  if (GetPlayerStat(ID,'Alive') = true) and activeWeapon then begin
 	if Player[ID].Pkasa >= Minimi then begin
 		Player[ID].Pkasa := Player[ID].Pkasa - Minimi;
 		forceWeapon(ID,9,GetPlayerStat(ID,'Primary'),0);
@@ -690,7 +690,7 @@ if regExpMatch('^/(buy fn minimi|buy FN|buy FN Minimi|buy minimi|buy Minimi|buy 
 end;
 
 if regExpMatch('^/(buy minigun|buy minig|buy Minigun|buy Minig|buy MiniG|buy Gun|buy gun)$',lowercase(Text)) then begin
-  if activeWeapon then begin
+  if (GetPlayerStat(ID,'Alive') = true) and activeWeapon then begin
 	if Player[ID].Pkasa >= Minigun then begin
 		Player[ID].Pkasa := Player[ID].Pkasa - Minigun;
 		forceWeapon(ID,10,GetPlayerStat(ID,'Primary'),0);
@@ -700,7 +700,7 @@ if regExpMatch('^/(buy minigun|buy minig|buy Minigun|buy Minig|buy MiniG|buy Gun
 end;
 
 if regExpMatch('^/(buy USSOCOM|buy ussocom|buy uscom|buy Uscom|buy usoco)$',lowercase(Text)) then begin
-  if activeBasic then begin
+  if (GetPlayerStat(ID,'Alive') = true) and activeBasic then begin
 	if Player[ID].Pkasa >= USSO then begin
 		Player[ID].Pkasa := Player[ID].Pkasa - USSO;
 		forceWeapon(ID,0,GetPlayerStat(ID,'Primary'),0);
@@ -710,7 +710,7 @@ if regExpMatch('^/(buy USSOCOM|buy ussocom|buy uscom|buy Uscom|buy usoco)$',lowe
 end;
 
 if regExpMatch('^/(buy Combat Knife|buy combat knife|buy Combat knife|buy combat Knife|buy Combat|buy combat|buy Knife|buy knife)$',lowercase(Text)) then begin
-  if activeBasic then begin
+  if (GetPlayerStat(ID,'Alive') = true) and activeBasic then begin
 	if Player[ID].Pkasa >= Knife then begin
 		Player[ID].Pkasa := Player[ID].Pkasa - Knife;
 		forceWeapon(ID,14,GetPlayerStat(ID,'Primary'),0);
@@ -720,7 +720,7 @@ if regExpMatch('^/(buy Combat Knife|buy combat knife|buy Combat knife|buy combat
 end;
 
 if regExpMatch('^/(buy SAW|buy Chainsaw|buy Chain|buy piła|buy bore|buy screw)$',lowercase(Text)) then begin
-  if activeBasic then begin
+  if (GetPlayerStat(ID,'Alive') = true) and activeBasic then begin
 	if Player[ID].Pkasa >= SAW then begin
 		Player[ID].Pkasa := Player[ID].Pkasa - SAW;
 		forceWeapon(ID,15,GetPlayerStat(ID,'Primary'),0);
@@ -730,7 +730,7 @@ if regExpMatch('^/(buy SAW|buy Chainsaw|buy Chain|buy piła|buy bore|buy screw)$
 end;
 
 if regExpMatch('^/(buy m72|buy law|buy M72 LAW)$',lowercase(Text)) then begin
-  if activeBasic then begin
+  if (GetPlayerStat(ID,'Alive') = true) and activeBasic then begin
 	if Player[ID].Pkasa >= LAW then begin
 		Player[ID].Pkasa := Player[ID].Pkasa - LAW;
 		forceWeapon(ID,16,GetPlayerStat(ID,'Primary'),0);
